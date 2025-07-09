@@ -2,7 +2,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# FastAPIアプリケーション作成
 app = FastAPI(
     title="FX Wave Detector API",
     description="FX第3波検出システムのバックエンドAPI",
