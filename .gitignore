@@ -1,0 +1,36 @@
+# 依存関係
+node_modules/
+__pycache__/
+*.pyc
+venv/
+
+# 環境設定ファイル
+.env
+.env.local
+.env.production
+
+# ビルドファイル
+.next/
+build/
+dist/
+
+# データベース
+*.db
+*.sqlite3
+
+# ログ
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+.dockerignore

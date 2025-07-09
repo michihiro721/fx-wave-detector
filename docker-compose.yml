@@ -1,0 +1,45 @@
+services:
+  # フロントエンド (Next.js)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+  # バックエンド (FastAPI)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - PYTHONPATH=/app
+      - DATABASE_URL=postgresql://fx_user:fx_password@db:5432/fx_database
+    depends_on:
+      - db
+
+  # データベース (PostgreSQL)
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=fx_database
+      - POSTGRES_USER=fx_user
+      - POSTGRES_PASSWORD=fx_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
