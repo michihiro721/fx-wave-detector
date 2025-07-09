@@ -20,7 +20,7 @@ export default function Home() {
   const [apiData, setApiData] = useState<ApiResponse | null>(null)
   const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'error'>('connecting')
   const [priceData, setPriceData] = useState<PriceData | null>(null)
-  const [alertCount, setAlertCount] = useState(0)
+  const [alertCount] = useState(0)
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
@@ -46,7 +46,7 @@ export default function Home() {
         setConnectionStatus('error')
       })
 
-    // 価格更新シミュレーション（実際はWebSocketで受信）
+    // 価格更新シミュレーション
     const priceInterval = setInterval(() => {
       if (connectionStatus === 'connected') {
         const basePrice = 150.245
@@ -274,7 +274,7 @@ export default function Home() {
         {/* フッター情報 */}
         <div className="mt-8 text-center text-sm text-gray-500">
           <p>FX Wave Detector v{apiData?.version || '1.0.0'} - 第3波検出アラートシステム</p>
-          <p className="mt-1">データ提供: OANDA API | 開発環境</p>
+          <p className="mt-1">データ提供: OANDA API | 本番環境</p>
         </div>
       </main>
     </div>
