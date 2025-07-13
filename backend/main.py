@@ -1,6 +1,9 @@
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.ext.asyncio import AsyncSession
+from database import get_db, test_db_connection
+import asyncio
 
 app = FastAPI(
     title="FX Wave Detector API",
@@ -30,10 +33,14 @@ async def root():
 # 健康状態チェック
 @app.get("/health")
 async def health_check():
+    # データベース接続テスト
+    db_status = await test_db_connection()
+    
     return {
-        "status": "healthy",
+        "status": "healthy" if db_status else "unhealthy",
         "service": "fx-wave-detector-backend",
-        "message": "バックエンドサービスは正常に動作しています"
+        "message": "バックエンドサービスは正常に動作しています",
+        "database": "connected" if db_status else "disconnected"
     }
 
 # テスト用エンドポイント
@@ -47,6 +54,28 @@ async def test_endpoint():
             "connection": "OK"
         }
     }
+
+# データベーステスト用エンドポイント
+@app.get("/api/db-test")
+async def test_database_operations(db: AsyncSession = Depends(get_db)):
+    try:
+        # 簡単なクエリ実行テスト
+        from sqlalchemy import text
+        result = await db.execute(text("SELECT 1 as test_value"))
+        test_value = result.scalar()
+        
+        return {
+            "status": "success",
+            "message": "データベース操作テスト成功",
+            "test_query_result": test_value,
+            "database": "operational"
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": f"データベース操作エラー: {str(e)}",
+            "database": "error"
+        }
 
 # 将来のFX価格エンドポイント（仮）
 @app.get("/api/fx/usdjpy")
