@@ -8,6 +8,10 @@ load_dotenv()
 # データベースURL（環境変数から取得）
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://fx_user:fx_password@localhost:5432/fx_database")
 
+# RenderのPostgreSQLの場合、URLが通常のpostgresql://形式で来るので変換
+if DATABASE_URL and DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
+
 # 非同期エンジンの作成
 engine = create_async_engine(
     DATABASE_URL,

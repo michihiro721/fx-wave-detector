@@ -16,8 +16,16 @@ config = context.config
 
 # 環境変数からデータベースURLを設定
 database_url = os.getenv("DATABASE_URL", "postgresql+asyncpg://fx_user:fx_password@localhost:5432/fx_database")
-# asyncpgをpsycopg2に変更（Alembicでは同期ドライバが必要）
-database_url = database_url.replace("postgresql+asyncpg://", "postgresql://")
+
+# RenderのPostgreSQLの場合、URLが通常のpostgresql://形式で来るので、Alembic用にpsycopg2形式に調整
+if database_url:
+    if database_url.startswith("postgresql+asyncpg://"):
+        # asyncpgをpsycopg2に変更（Alembicでは同期ドライバが必要）
+        database_url = database_url.replace("postgresql+asyncpg://", "postgresql://")
+    elif database_url.startswith("postgresql://"):
+        # すでに正しい形式
+        pass
+
 config.set_main_option("sqlalchemy.url", database_url)
 
 # Interpret the config file for Python logging.

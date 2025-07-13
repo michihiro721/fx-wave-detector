@@ -8,9 +8,10 @@ try:
     from sqlalchemy.ext.asyncio import AsyncSession
     from database import get_db, test_db_connection
     DB_AVAILABLE = True
-except ImportError as e:
+except Exception as e:
     print(f"Database imports failed: {e}")
     DB_AVAILABLE = False
+    AsyncSession = None
     
     # ダミー関数を定義
     async def get_db():
